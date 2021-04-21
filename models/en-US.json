@@ -1,0 +1,70 @@
+{
+  "interactionModel": {
+    "languageModel": {
+      "invocationName": "rocket test",
+      "intents": [
+        {
+          "name": "AMAZON.NavigateHomeIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.CancelIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.HelpIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.StopIntent",
+          "samples": []
+        },
+        {
+          "name": "GetRemoteDataIntent",
+          "slots": [],
+          "samples": [
+            "how many people are in space",
+            "how many people are in space now",
+            "how many people are currently in space",
+            "how many humans are in space",
+            "how many humans are in space now",
+            "how many humans are currently in space",
+            "how many astronauts are in space",
+            "how many astronauts are in space now",
+            "how many astronauts are currently in space"
+          ]
+        },
+        {
+          "name": "GetStatusDataIntent",
+          "slots": [
+            {
+              "name": "id",
+              "type": "AMAZON.NUMBER"
+            }
+          ],
+          "samples": [
+            "could you give me the status of elevator {id}",
+            "i need the status of elevator {id}",
+            "what's happening with elevator {id}",
+            "what's going on with elevator {id}",
+            "what's up with the status of elevator {id}",
+            "what's going on with the status of elevator {id}",
+            "what's the status of elevator {id}",
+            "elevator {id}",
+            "{id}"
+          ]
+        },
+        {
+          "name": "CallStatus",
+          "slots": [],
+          "samples": [
+            "elevator status",
+            "give me status of elevator",
+            "call for status"
+          ]
+        }
+      ],
+      "types": []
+    }
+  }
+}
