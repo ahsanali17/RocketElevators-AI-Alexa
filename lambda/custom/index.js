@@ -3,12 +3,14 @@
 
 const Alexa = require("ask-sdk-core");
 
+// Greeting when Alexa is actived through "rocket test"
 const LaunchRequestHandler = {
   canHandle(handlerInput) {
     return handlerInput.requestEnvelope.request.type === "LaunchRequest";
   },
   handle(handlerInput) {
-    const speechText = "Hello! How may I help you today?";
+    const speechText =
+      "What it do home boy?  I gots information up in dis piece, so throw down whatchu wanna know.";
 
     return handlerInput.responseBuilder
       .speak(speechText)
@@ -24,6 +26,8 @@ const GetRemoteDataHandler = {
       handlerInput.requestEnvelope.request.intent.name === "GetRemoteDataIntent"
     );
   },
+
+  // The information that's going on at Rocket Elevators.  Say something like "What's going on at Rocket Elevators"
   async handle(handlerInput) {
     let outputSpeech = "This is the default message.";
 
@@ -44,23 +48,7 @@ const GetRemoteDataHandler = {
   },
 };
 
-// const NameNumberIntentHandler = {
-//   canHandle(handlerInput) {
-//     return (handlerInput.requestEnvelope.request.type === 'IntentRequest'
-//       && handlerInput.requestEnvelope.request.intent.name === 'CallStatus');
-//   },
-//   handle(handlerInput) {
-//     const speechText = 'Ok. Tell me any number after a signal. Beep!'
-
-//     return handlerInput.responseBuilder
-//       .speak(speechText)
-//       .reprompt(speechText) // <--- Here is our reprompt
-//       .withSimpleCard('What did I learn', speechText)
-//       .getResponse();
-//   },
-// };
-
-// Getting the Elevator Status
+// Getting the Elevator Status.  Say something like "Whats the status of Elevator {id number}"
 const GetStatusDataHandler = {
   canHandle(handlerInput) {
     return (
@@ -70,6 +58,7 @@ const GetStatusDataHandler = {
   },
   async handle(handlerInput) {
     let outputSpeech = "This is the default message.";
+    let anythingElse = `Is there anything else I can help you with today?`;
     const slots = handlerInput.requestEnvelope.request.intent.slots;
     const number = slots["id"].value;
 
@@ -78,7 +67,7 @@ const GetStatusDataHandler = {
     )
       .then((response) => {
         const data = response;
-        outputSpeech = `The status of elevator ${number} is ${data}`;
+        outputSpeech = `The status of elevator ${number} is ${data}. ${anythingElse}`;
       })
       .catch((err) => {
         console.log(`ERROR: ${err.message}`);
@@ -86,7 +75,10 @@ const GetStatusDataHandler = {
         // outputSpeech = err.message;
       });
 
-    return handlerInput.responseBuilder.speak(outputSpeech).getResponse();
+    return handlerInput.responseBuilder
+      .speak(outputSpeech)
+      .reprompt(anythingElse)
+      .getResponse();
   },
 };
 
@@ -185,7 +177,6 @@ exports.handler = skillBuilder
   .addRequestHandlers(
     LaunchRequestHandler,
     GetRemoteDataHandler,
-    // NameNumberIntentHandler,
     GetStatusDataHandler,
     HelpIntentHandler,
     CancelAndStopIntentHandler,
