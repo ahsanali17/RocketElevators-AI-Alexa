@@ -9,13 +9,34 @@ const LaunchRequestHandler = {
     return handlerInput.requestEnvelope.request.type === "LaunchRequest";
   },
   handle(handlerInput) {
-    const speechText =
-      "What it do home boy?  I gots information up in dis piece, so throw down whatchu wanna know.";
+    let d = new Date();
+    let t = d.getHours();
+
+    const speechText = `${d}`;
 
     return handlerInput.responseBuilder
       .speak(speechText)
       .reprompt(speechText)
       .getResponse();
+
+    // if(t > 12) {
+    //     const speechText = 'Good evening!  What can I do for you today?';
+
+    //     return handlerInput.responseBuilder
+    //   .speak(speechText)
+    //   .reprompt(speechText)
+    //   .getResponse();
+    // }
+    // else {
+    //     const speechText = 'Good morning!  What can I do for you today?';
+
+    //     return handlerInput.responseBuilder
+    //   .speak(speechText)
+    //   .reprompt(speechText)
+    //   .getResponse();
+    // }
+    // Alternatively, we could put some street lingo for some needed humor
+    // "What it do home boy?  I gots information up in dis piece, so throw down whatchu wanna know.";
   },
 };
 
@@ -35,7 +56,6 @@ const GetRemoteDataHandler = {
       "https://rest-api-burroughs.herokuapp.com/api/greetings"
     )
       .then((response) => {
-        // const data = JSON.parse(response);
         outputSpeech = response;
       })
       .catch((err) => {
@@ -58,6 +78,7 @@ const GetStatusDataHandler = {
   },
   async handle(handlerInput) {
     let outputSpeech = "This is the default message.";
+
     let anythingElse = `Is there anything else I can help you with today?`;
     const slots = handlerInput.requestEnvelope.request.intent.slots;
     const number = slots["id"].value;
@@ -82,6 +103,7 @@ const GetStatusDataHandler = {
   },
 };
 
+// Default Amazon Intents / Helpers
 const HelpIntentHandler = {
   canHandle(handlerInput) {
     return (
@@ -142,7 +164,9 @@ const ErrorHandler = {
       .getResponse();
   },
 };
+// Default Amazon Intents / Helpers END
 
+// Services of Rocket Elevators
 const getRemoteData = (url) =>
   new Promise((resolve, reject) => {
     const client = url.startsWith("https") ? require("https") : require("http");
@@ -156,6 +180,7 @@ const getRemoteData = (url) =>
     });
     request.on("error", (err) => reject(err));
   });
+
 // Elevator status data function
 const getStatusData = (url) =>
   new Promise((resolve, reject) => {
@@ -170,7 +195,7 @@ const getStatusData = (url) =>
     });
     request.on("error", (err) => reject(err));
   });
-// Elevator status data function END
+
 const skillBuilder = Alexa.SkillBuilders.custom();
 
 exports.handler = skillBuilder
