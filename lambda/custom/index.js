@@ -2,6 +2,7 @@
 /* eslint-disable global-require */
 
 const Alexa = require("ask-sdk-core");
+const axios = require("axios");
 
 // Greeting when Alexa is actived through "rocket test"
 const LaunchRequestHandler = {
@@ -12,29 +13,29 @@ const LaunchRequestHandler = {
     let d = new Date();
     let t = d.getHours();
 
-    const speechText = `${d}`;
+    // Alexa uses Coordinated Univeral Time, so my numbers may look a little awkward for the time.
+    if (t > 5 && t < 16) {
+      const speechText = "Good morning!  What can I do for you today?";
 
-    return handlerInput.responseBuilder
-      .speak(speechText)
-      .reprompt(speechText)
-      .getResponse();
+      return handlerInput.responseBuilder
+        .speak(speechText)
+        .reprompt(speechText)
+        .getResponse();
+    } else if (t >= 16 && t < 21) {
+      const speechText = "Good afternoon!  What can I do for you today?";
 
-    // if(t > 12) {
-    //     const speechText = 'Good evening!  What can I do for you today?';
+      return handlerInput.responseBuilder
+        .speak(speechText)
+        .reprompt(speechText)
+        .getResponse();
+    } else {
+      const speechText = "Good evening!  What can I do for you today?";
 
-    //     return handlerInput.responseBuilder
-    //   .speak(speechText)
-    //   .reprompt(speechText)
-    //   .getResponse();
-    // }
-    // else {
-    //     const speechText = 'Good morning!  What can I do for you today?';
-
-    //     return handlerInput.responseBuilder
-    //   .speak(speechText)
-    //   .reprompt(speechText)
-    //   .getResponse();
-    // }
+      return handlerInput.responseBuilder
+        .speak(speechText)
+        .reprompt(speechText)
+        .getResponse();
+    }
     // Alternatively, we could put some street lingo for some needed humor
     // "What it do home boy?  I gots information up in dis piece, so throw down whatchu wanna know.";
   },
@@ -102,6 +103,56 @@ const GetStatusDataHandler = {
       .getResponse();
   },
 };
+
+// Changing the Elevator Status.  Say something like "change the status of elevator {id} to {status}"
+const PutElStatusChangeDataHandler = {
+  canHandle(handlerInput) {
+    return (
+      handlerInput.requestEnvelope.request.type === "IntentRequest" &&
+      handlerInput.requestEnvelope.request.intent.name ===
+        "PutChangeStatusIntent"
+    );
+  },
+  async handle(handlerInput) {
+    let outputSpeech = "This is the default message.";
+
+    const slots = handlerInput.requestEnvelope.request.intent.slots;
+    const number = slots["id"].value;
+    const status = slots["status"].value;
+    let capStatus = capitalized(status);
+
+    return getElStatusData(number, status, handlerInput);
+  },
+};
+async function getElStatusData(number, capStatus, handlerInput) {
+  return await axios
+    .put(
+      `https://rest-api-burroughs.herokuapp.com/api/elevators/${number}/status`,
+      {
+        id: `${number}`,
+        status: `${capStatus}`,
+      }
+    )
+    .then((response) => {
+      let anythingElse = `Is there anything else I can help you with today?`;
+      const data = response;
+      const outputSpeech = `The status of elevator ${number} is now ${capStatus}. ${anythingElse}`;
+
+      return handlerInput.responseBuilder
+        .speak(outputSpeech)
+        .reprompt(anythingElse)
+        .getResponse();
+    })
+    .catch((err) => {
+      console.log(`ERROR: ${err.message}`);
+      // set an optional error message here
+      // outputSpeech = err.message;
+    });
+}
+
+function capitalized(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
 
 // Default Amazon Intents / Helpers
 const HelpIntentHandler = {
@@ -203,6 +254,7 @@ exports.handler = skillBuilder
     LaunchRequestHandler,
     GetRemoteDataHandler,
     GetStatusDataHandler,
+    PutElStatusChangeDataHandler,
     HelpIntentHandler,
     CancelAndStopIntentHandler,
     SessionEndedRequestHandler

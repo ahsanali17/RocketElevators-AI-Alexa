@@ -44,8 +44,7 @@
             "what's up with the status of elevator {id}",
             "what's going on with the status of elevator {id}",
             "what's the status of elevator {id}",
-            "elevator {id}",
-            "{id}"
+            "elevator {id}"
           ]
         },
         {
@@ -56,9 +55,44 @@
             "give me status of elevator",
             "call for status"
           ]
+        },
+        {
+          "name": "PutChangeStatusIntent",
+          "slots": [
+            {
+              "name": "id",
+              "type": "AMAZON.NUMBER"
+            },
+            {
+              "name": "status",
+              "type": "AMAZON.FirstName"
+            }
+          ],
+          "samples": ["change the status of elevator {id} to {status}"]
         }
       ],
-      "types": []
+      "types": [
+        {
+          "name": "STATUS",
+          "values": [
+            {
+              "name": {
+                "value": "Intervention"
+              }
+            },
+            {
+              "name": {
+                "value": "Inactive"
+              }
+            },
+            {
+              "name": {
+                "value": "Active"
+              }
+            }
+          ]
+        }
+      ]
     }
   }
 }
