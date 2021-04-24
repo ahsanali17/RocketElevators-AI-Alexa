@@ -2,14 +2,26 @@
 
 <p>
   <h1 align="center">Week 13 team</h1>
-  <ul>
-    <li><strong>Ahsan Syed</strong> - Team Leader</li>
-    <li>Kaelen Burroughs</li>
-    <li>Shaphan Charles</li>
-    <li>Don Nguyen</li>
-    <li>Timothy Wever</li>
-  </ul>
-</p>
+  
+  ```javascript
+
+function isTeamLeader(person) {
+  const teamLeader = "Ahsan Syed";
+  if(person === teamLeader){
+    console.log(True);
+  }
+  else {
+    console.log("Kaelen Burroughs");
+    console.log("Shaphan Charles");
+    console.log("Don Nguyen");
+    console.log("Timothy Wever");
+  }
+  
+  return Week 13;
+}
+
+isTeamLeader("Ahsan Syed");
+```
 
 ---
 
