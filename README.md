@@ -4,17 +4,21 @@
   <h1 align="center">Week 13 team</h1>
   
   ```javascript
+function logTeam() {
+  console.log("Kaelen Burroughs");
+  console.log("Shaphan Charles");
+  console.log("Don Nguyen");
+  console.log("Timothy Wever");
+}
 
 function isTeamLeader(person) {
   const teamLeader = "Ahsan Syed";
   if(person === teamLeader){
-    console.log(True);
+    console.log(`The team leader is ${teamLeader}`);
+    logTeam();
   }
   else {
-    console.log("Kaelen Burroughs");
-    console.log("Shaphan Charles");
-    console.log("Don Nguyen");
-    console.log("Timothy Wever");
+    console.log(`There is no team`);
   }
   
   return Week 13;
