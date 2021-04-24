@@ -3,7 +3,7 @@
 <p>
   <h1 align="center">Week 13 team</h1>
   <ul>
-    <li><strong>Ahsan Syed</strong></li>
+    <li><strong>Ahsan Syed</strong> - Team Leader</li>
     <li>Kaelen Burroughs</li>
     <li>Shaphan Charles</li>
     <li>Don Nguyen</li>
