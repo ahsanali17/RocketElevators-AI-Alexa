@@ -65,7 +65,10 @@ const GetRemoteDataHandler = {
         // outputSpeech = err.message;
       });
 
-    return handlerInput.responseBuilder.speak(outputSpeech).getResponse();
+    return handlerInput.responseBuilder
+      .speak(outputSpeech)
+      .reprompt(outputSpeech)
+      .getResponse();
   },
 };
 
@@ -104,6 +107,38 @@ const GetStatusDataHandler = {
   },
 };
 
+// Getting how many Elevators are Inactive, and active.  Say something like "How many elevators are inactive?"
+const GetInactiveDataHandler = {
+  canHandle(handlerInput) {
+    return (
+      handlerInput.requestEnvelope.request.type === "IntentRequest" &&
+      handlerInput.requestEnvelope.request.intent.name ===
+        "GetInactiveDataIntent"
+    );
+  },
+  async handle(handlerInput) {
+    let outputSpeech = "This is the default message.";
+    let anythingElse = `Is there anything else I can help you with today?`;
+
+    await getInactiveData(
+      "https://rest-api-burroughs.herokuapp.com/api/elevators/inactive-count"
+    )
+      .then((response) => {
+        outputSpeech = `There are ${response} inactive elevators. ${anythingElse}`;
+      })
+      .catch((err) => {
+        console.log(`ERROR: ${err.message}`);
+        // set an optional error message here
+        // outputSpeech = err.message;
+      });
+
+    return handlerInput.responseBuilder
+      .speak(outputSpeech)
+      .reprompt(anythingElse)
+      .getResponse();
+  },
+};
+
 // Changing the Elevator Status.  Say something like "change the status of elevator {id} to {status}"
 const PutElStatusChangeDataHandler = {
   canHandle(handlerInput) {
@@ -125,7 +160,7 @@ const PutElStatusChangeDataHandler = {
   },
 };
 async function getElStatusData(number, capStatus, handlerInput) {
-  return await axios
+  return axios
     .put(
       `https://rest-api-burroughs.herokuapp.com/api/elevators/${number}/status`,
       {
@@ -153,6 +188,32 @@ async function getElStatusData(number, capStatus, handlerInput) {
 function capitalized(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
+
+const GetInsultDataHandler = {
+  canHandle(handlerInput) {
+    return (
+      handlerInput.requestEnvelope.request.type === "IntentRequest" &&
+      handlerInput.requestEnvelope.request.intent.name === "GetInsultDataIntent"
+    );
+  },
+
+  // The information that's going on at Rocket Elevators.  Say something like "What's going on at Rocket Elevators"
+  async handle(handlerInput) {
+    let outputSpeech = "This is the default message.";
+
+    await getInsultData("https://insult.mattbas.org/api/insult")
+      .then((response) => {
+        outputSpeech = `Oh, is that right?  Well, if we're being honest with each other, I think ${response}`;
+      })
+      .catch((err) => {
+        console.log(`ERROR: ${err.message}`);
+        // set an optional error message here
+        // outputSpeech = err.message;
+      });
+
+    return handlerInput.responseBuilder.speak(outputSpeech).getResponse();
+  },
+};
 
 // Default Amazon Intents / Helpers
 const HelpIntentHandler = {
@@ -247,6 +308,35 @@ const getStatusData = (url) =>
     request.on("error", (err) => reject(err));
   });
 
+// Elevator Inactive data function
+const getInactiveData = (url) =>
+  new Promise((resolve, reject) => {
+    const client = url.startsWith("https") ? require("https") : require("http");
+    const request = client.get(url, (response) => {
+      if (response.statusCode < 200 || response.statusCode > 299) {
+        reject(new Error(`Failed with status code: ${response.statusCode}`));
+      }
+      const body = [];
+      response.on("data", (chunk) => body.push(chunk));
+      response.on("end", () => resolve(body.join("")));
+    });
+    request.on("error", (err) => reject(err));
+  });
+
+const getInsultData = (url) =>
+  new Promise((resolve, reject) => {
+    const client = url.startsWith("https") ? require("https") : require("http");
+    const request = client.get(url, (response) => {
+      if (response.statusCode < 200 || response.statusCode > 299) {
+        reject(new Error(`Failed with status code: ${response.statusCode}`));
+      }
+      const body = [];
+      response.on("data", (chunk) => body.push(chunk));
+      response.on("end", () => resolve(body.join("")));
+    });
+    request.on("error", (err) => reject(err));
+  });
+
 const skillBuilder = Alexa.SkillBuilders.custom();
 
 exports.handler = skillBuilder
@@ -254,7 +344,9 @@ exports.handler = skillBuilder
     LaunchRequestHandler,
     GetRemoteDataHandler,
     GetStatusDataHandler,
+    GetInactiveDataHandler,
     PutElStatusChangeDataHandler,
+    GetInsultDataHandler,
     HelpIntentHandler,
     CancelAndStopIntentHandler,
     SessionEndedRequestHandler

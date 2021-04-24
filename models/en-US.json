@@ -48,15 +48,6 @@
           ]
         },
         {
-          "name": "CallStatus",
-          "slots": [],
-          "samples": [
-            "elevator status",
-            "give me status of elevator",
-            "call for status"
-          ]
-        },
-        {
           "name": "PutChangeStatusIntent",
           "slots": [
             {
@@ -69,6 +60,27 @@
             }
           ],
           "samples": ["change the status of elevator {id} to {status}"]
+        },
+        {
+          "name": "GetInactiveDataIntent",
+          "slots": [],
+          "samples": [
+            "how many elevators need maintenance",
+            "how many elevators are broke down",
+            "how many elevators are not working",
+            "how many elevators are down",
+            "how many elevators are inactive"
+          ]
+        },
+        {
+          "name": "GetInsultDataIntent",
+          "slots": [],
+          "samples": [
+            "you always have trouble understanding people",
+            "youre not very intuitive",
+            "youre not very good at understanding",
+            "i think siri works better"
+          ]
         }
       ],
       "types": [
